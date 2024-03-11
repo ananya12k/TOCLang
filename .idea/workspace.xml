@@ -7,9 +7,7 @@
     <list default="true" id="4f6fec2d-7b03-4255-88f7-76a902321c4b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lexertoc.py" beforeDir="false" afterPath="$PROJECT_DIR$/lexertoc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parser.out" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/parsertoc.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsertoc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parsetab.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,7 +179,7 @@
       <workItem from="1710128533638" duration="717000" />
       <workItem from="1710130582522" duration="78000" />
       <workItem from="1710130677194" duration="3540000" />
-      <workItem from="1710149752770" duration="14656000" />
+      <workItem from="1710149752770" duration="15245000" />
     </task>
     <servers />
   </component>

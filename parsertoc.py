@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 
 # Get the token list from the lexer
-from .lexertoc import tokens
+from lexertoc import tokens
 
 
 # Parsing rules
