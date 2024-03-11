@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 
 # Get the token list from the lexer
-from lexertoc import tokens
+from .lexertoc import tokens
 
 
 # Parsing rules
@@ -490,9 +490,12 @@ def p_statement_comment(p):
     pass  # Comments are ignored in parsing
 
 
-# Error rule for syntax errors
-# Define custom error messages for production rules
-parser = yacc.yacc()
+def find_column(lexpos, lexdata):
+    last_cr = lexdata.rfind('\n', 0, lexpos)
+    if last_cr < 0:
+        last_cr = 0
+    column = (lexpos - last_cr) + 1
+    return column
 
 
 # Modify the error function to access lexer
@@ -505,27 +508,37 @@ def p_error(p):
         print("Syntax error: Unexpected end of input")
 
 
+# Error rule for syntax errors
+# Define custom error messages for production rules
+parser = yacc.yacc()
+
 # Modify find_column function to accept lexer data
-def find_column(lexpos, lexdata):
-    last_cr = lexdata.rfind('\n', 0, lexpos)
-    if last_cr < 0:
-        last_cr = 0
-    column = (lexpos - last_cr) + 1
-    return column
 
-
-# Test the parser
-data = '''
-alphabet my_alphabet = {a, b, c}
-str my_string = ababac
-initial: {q1}
-final: {q2, q3}
-re my_regex = 'a|(b|x)*'
-'''
-
-# Parse the input using the parser object
-result = parser.parse(data)
-
-# Print the result
-for statement in result:
-    print(statement)
+#
+# # Test the parser
+# data = '''
+# alphabet my_alphabet = {a, b, c}
+# str my_string = ababac
+# initial: {q1}
+# final: {q2, q3}
+# re my_regex = 'a|(b|x)*'
+# pda mypda {
+#     states: {q0, q1, q2},
+#     alphabet: {a, b, c},
+#     stack_alphabet: {A, B, C},
+#     initial: q0,
+#     final: q2,
+#     transitions: [
+#         {from: q0, to: q1, on: a, pop: A, push: AB},
+#         {from: q1, to: q1, on: b, pop: A, push: BC},
+#         {from: q1, to: q2, on: c, pop: B, push: ε}
+#     ]
+# }
+# '''
+#
+# # Parse the input using the parser object
+# result = parser.parse(data)
+#
+# # Print the result
+# for statement in result:
+#     print(statement)

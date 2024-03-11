@@ -64,16 +64,17 @@ reserved = {
     'transitions': 'TRANSITIONS'
 }
 special_characters = {
-    'STAR': '*',
-    'PLUS': '+',
-    'OR': '|',
-    'DOT': '.',
-    'CARET': '^',
-    'DOLLAR': '$',
-    'QUESTION': '?',
+    '*': 'STAR',
+    '+': 'PLUS',
+    '|': 'OR',
+    '.': 'DOT',
+    '^': 'CARET',
+    '$': 'DOLLAR',
+    '?': 'QUESTION',
 }
+
 # List of token names
-tokens = list(reserved.values()) + list(special_characters.keys()) + [
+tokens = list(reserved.values()) + list(special_characters.values()) + [
     'NUMBER',
     'ID',
     'LBRACE',
@@ -98,6 +99,7 @@ tokens = list(reserved.values()) + list(special_characters.keys()) + [
 ]
 
 # Define regular expressions for tokens
+# Define regular expressions for tokens
 t_SINGLEQUOTE = r"'"
 t_STRING = r'".*?"'  # This regex matches a string enclosed in double quotes
 t_NUMBER = r'\d+'
@@ -114,7 +116,9 @@ t_ARROW = r'->'
 t_PIPE = r'\|'
 t_SEMICOLON = r';'
 t_EPSILON = r'ε'
+t_STAR = r'\*'  # Added rule for the asterisk character
 t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
+
 
 
 # Define a rule for REGEX_LITERAL_CHAR
