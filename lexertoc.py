@@ -78,7 +78,8 @@ tokens = list(reserved.values()) + [
     'DOCCOMMENT',  # Documentation comment """ """
     'ARROW',
     'PIPE',
-    'SEMICOLON'
+    'SEMICOLON',
+    'EPSILON'
 ]
 
 # Define regular expressions for tokens
@@ -96,6 +97,7 @@ t_RPAREN = r'\)'
 t_ARROW = r'->'
 t_PIPE = r'\|'
 t_SEMICOLON = r';'
+t_EPSILON=r'ε'
 
 
 # Define a rule for single-line comments
@@ -181,7 +183,10 @@ alphabet = {a, b, c}
 string = "ababac"
 
 // Define a finite automaton (FA) named myfa
-fa myfa() {
+fa 
+
+
+() {
     // Define the states
     states: {q1, q2},
 
