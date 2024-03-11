@@ -88,9 +88,9 @@ def p_transitions_list(p):
 
 
 def p_transition(p):
-    '''transition : LBRACE FROM COLON ID COMMA TO COLON ID COMMA ONN COLON ID RBRACE
-                    | LBRACE FROM COLON ID COMMA TO COLON ID COMMA ONN COLON ID COMMA POP COLON ID COMMA PUSH COLON ID COMMA STACK COLON ID RBRACE'''
-    if len(p) == 10:
+    '''transition : LSQUARE FROM COLON ID COMMA TO COLON ID COMMA ONN COLON ID RSQUARE
+                   | LSQUARE FROM COLON ID COMMA TO COLON ID COMMA ONN COLON ID COMMA POP COLON ID COMMA PUSH COLON ID COMMA STACK COLON ID RSQUARE'''
+    if len(p) == 11:
         p[0] = (p[4], p[7], p[10])
     else:
         p[0] = (p[4], p[7], p[10], p[13], p[16])
@@ -516,29 +516,29 @@ parser = yacc.yacc()
 
 #
 # # Test the parser
-# data = '''
-# alphabet my_alphabet = {a, b, c}
-# str my_string = ababac
-# initial: {q1}
-# final: {q2, q3}
-# re my_regex = 'a|(b|x)*'
-# pda mypda {
-#     states: {q0, q1, q2},
-#     alphabet: {a, b, c},
-#     stack_alphabet: {A, B, C},
-#     initial: q0,
-#     final: q2,
-#     transitions: [
-#         {from: q0, to: q1, on: a, pop: A, push: AB},
-#         {from: q1, to: q1, on: b, pop: A, push: BC},
-#         {from: q1, to: q2, on: c, pop: B, push: ε}
-#     ]
-# }
-# '''
-#
-# # Parse the input using the parser object
-# result = parser.parse(data)
-#
-# # Print the result
-# for statement in result:
-#     print(statement)
+data = '''
+alphabet my_alphabet = {a, b, c}
+str my_string = ababac
+initial: {q1}
+final: {q2, q3}
+re my_regex = 'a|(b|x)*'
+pda mypda {
+    states: {q0, q1, q2},
+    alphabet: {a, b, c},
+    stack_alphabet: {A, B, C},
+    initial: q0,
+    final: q2,
+    transitions: [
+        {from: q0, to: q1, on: a, pop: A, push: AB},
+        {from: q1, to: q1, on: b, pop: A, push: BC},
+        {from: q1, to: q2, on: c, pop: B, push: ε}
+    ]
+}
+'''
+
+# Parse the input using the parser object
+result = parser.parse(data)
+
+# Print the result
+for statement in result:
+    print(statement)

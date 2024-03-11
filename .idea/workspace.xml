@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4f6fec2d-7b03-4255-88f7-76a902321c4b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lexertoc.py" beforeDir="false" afterPath="$PROJECT_DIR$/lexertoc.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parsertoc.py" beforeDir="false" afterPath="$PROJECT_DIR$/parsertoc.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -179,7 +177,7 @@
       <workItem from="1710128533638" duration="717000" />
       <workItem from="1710130582522" duration="78000" />
       <workItem from="1710130677194" duration="3540000" />
-      <workItem from="1710149752770" duration="15245000" />
+      <workItem from="1710149752770" duration="15550000" />
     </task>
     <servers />
   </component>
@@ -210,7 +208,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/TOC$main.coverage" NAME="main Coverage Results" MODIFIED="1709626903818" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/TOC$parsertoc.coverage" NAME="parsertoc Coverage Results" MODIFIED="1710185780609" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/TOC$parsertoc.coverage" NAME="parsertoc Coverage Results" MODIFIED="1710186797429" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/TOC$lexer.coverage" NAME="lexer Coverage Results" MODIFIED="1710093302784" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/TOC$lexertoc__1_.coverage" NAME="lexertoc (1) Coverage Results" MODIFIED="1710185519580" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
