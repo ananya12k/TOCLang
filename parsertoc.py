@@ -26,7 +26,8 @@ def p_statement_str(p):
 
 def p_statement(p):
     '''statement : fa_statement
-                 | pda_statement'''
+                 | pda_statement
+                 | cfg_statement'''
     p[0] = p[1]
 
 
@@ -176,7 +177,7 @@ def p_stack_init(p):
 
 
 # grammar rule for defining a context free grammar
-# cfg MyGrammar {
+# cfg MyGrammar() {
 #     nonterminals: A, B, C;
 #     terminals: a, b, c;
 #     start: A;
@@ -187,54 +188,6 @@ def p_stack_init(p):
 #     }
 # }
 
-
-def p_statement_cfg(p):
-    '''statement : CFG ID LPAREN RPAREN LBRACE statement_list_cfg RBRACE'''
-    p[0] = ('cfg', p[2], p[6])
-
-
-def p_statement_list_cfg(p):
-    '''statement_list_cfg : statement
-                      | statement_list_cfg statement'''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = p[1] + [p[2]]
-
-
-def p_statement_nonterminals(p):
-    '''statement : NONTERMINALS COLON LBRACE nonterminals_list RBRACE'''
-    p[0] = ('nonterminals', p[3])
-
-
-def p_nonterminals_list(p):
-    '''nonterminals_list : ID
-                   | nonterminals_list COMMA ID'''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = p[1] + [p[3]]
-
-
-def p_statement_terminals(p):
-    '''statement : TERMINALS COLON LBRACE terminals_list RBRACE'''
-    p[0] = ('terminals', p[3])
-
-
-def p_terminals_list(p):
-    '''terminals_list : ID
-                   | terminals_list COMMA ID'''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = p[1] + [p[3]]
-
-
-def p_statement_start(p):
-    '''statement : START COLON ID'''
-    p[0] = ('start', p[3])
-
-
 # rules should be like
 # rules: {
 #         A -> B C;
@@ -243,9 +196,61 @@ def p_statement_start(p):
 #     }
 # use ARROW for -> and PIPE for |
 
+def p_cfg_statement(p):
+    '''cfg_statement : CFG ID LPAREN RPAREN LBRACE cfg_body RBRACE'''
+    p[0] = ('cfg', p[2], p[6])
 
-def p_statement_rules(p):
-    '''statement : RULES COLON LBRACE rules_list RBRACE'''
+
+def p_cfg_body(p):
+    '''cfg_body : nonterminals_statement
+                | terminals_statement
+                | start_statement
+                | rules_statement
+                | cfg_body nonterminals_statement
+                | cfg_body terminals_statement
+                | cfg_body start_statement
+                | cfg_body rules_statement'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[2]]
+
+
+def p_nonterminals_statement(p):
+    '''nonterminals_statement : NONTERMINALS COLON LBRACE nonterminals_list RBRACE'''
+    p[0] = ('nonterminals', p[3])
+
+
+def p_nonterminals_list(p):
+    '''nonterminals_list : ID
+                         | nonterminals_list COMMA ID'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[3]]
+
+
+def p_terminals_statement(p):
+    '''terminals_statement : TERMINALS COLON LBRACE terminals_list RBRACE'''
+    p[0] = ('terminals', p[3])
+
+
+def p_terminals_list(p):
+    '''terminals_list : ID
+                      | terminals_list COMMA ID'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[3]]
+
+
+def p_start_statement(p):
+    '''start_statement : START COLON ID'''
+    p[0] = ('start', p[3])
+
+
+def p_rules_statement(p):
+    '''rules_statement : RULES COLON LBRACE rules_list RBRACE'''
     p[0] = ('rules', p[3])
 
 
