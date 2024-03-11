@@ -24,13 +24,53 @@ def p_statement_str(p):
     p[0] = ('str', p[2], p[4])
 
 
-def p_statement_initial(p):
-    '''statement : INITIAL COLON LBRACE ID RBRACE'''
+def p_statement(p):
+    '''statement : fa_statement
+                 | pda_statement'''
+    p[0] = p[1]
+
+
+def p_fa_statement(p):
+    '''fa_statement : FA ID LPAREN RPAREN LBRACE fa_body RBRACE'''
+    p[0] = ('fa', p[2], p[6])
+
+
+def p_pda_statement(p):
+    '''pda_statement : PDA ID LPAREN RPAREN LBRACE pda_body RBRACE'''
+    p[0] = ('pda', p[2], p[6])
+
+
+# FA grammar rules
+
+def p_fa_body(p):
+    '''fa_body : states
+               | initial
+               | final
+               | transitions'''
+    p[0] = p[1]
+
+
+def p_states(p):
+    '''states : STATES COLON LBRACE states_list RBRACE'''
+    p[0] = ('states', p[3])
+
+
+def p_states_list(p):
+    '''states_list : ID
+                   | states_list COMMA ID'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[3]]
+
+
+def p_initial(p):
+    '''initial : INITIAL COLON LBRACE ID RBRACE'''
     p[0] = ('initial', p[4])
 
 
-def p_statement_final(p):
-    '''statement : FINAL COLON LBRACE final_list RBRACE'''
+def p_final(p):
+    '''final : FINAL COLON LBRACE final_list RBRACE'''
     p[0] = ('final', p[3])
 
 
@@ -43,20 +83,43 @@ def p_final_list(p):
         p[0] = p[1] + [p[3]]
 
 
-# grammar rule for defining states
-# states: {q1,q2}
-def p_statement_states(p):
-    '''statement : STATES COLON LBRACE states_list RBRACE'''
-    p[0] = ('states', p[3])
+def p_transitions(p):
+    '''transitions : TRANSITIONS COLON LBRACE transitions_list RBRACE'''
+    p[0] = ('transitions', p[3])
 
 
-def p_states_list(p):
-    '''states_list : ID
-                   | states_list COMMA ID'''
+def p_transitions_list(p):
+    '''transitions_list : transition
+                        | transitions_list COMMA transition'''
     if len(p) == 2:
         p[0] = [p[1]]
     else:
         p[0] = p[1] + [p[3]]
+
+
+def p_transition(p):
+    '''transition : LSQUARE FROM COLON ID COMMA TO COLON ID COMMA ONN COLON ID RSQUARE
+                  | LSQUARE FROM COLON ID COMMA TO COLON ID COMMA ONN COLON ID COMMA POP COLON ID COMMA PUSH COLON ID COMMA STACK COLON ID RSQUARE'''
+    if len(p) == 11:
+        p[0] = (p[4], p[7], p[10])
+    else:
+        p[0] = (p[4], p[7], p[10], p[13], p[16])
+
+
+# PDA grammar rules
+
+def p_pda_body(p):
+    '''pda_body : states
+                | initial
+                | stack_init
+                | final
+                | transitions'''
+    p[0] = p[1]
+
+
+def p_stack_init(p):
+    '''stack_init : STACK_INIT COLON ID'''
+    p[0] = ('stack_init', p[3])
 
 
 # grammar rule for defining transitions for a FA
@@ -73,27 +136,6 @@ def p_states_list(p):
 #     {from: q1, to: q2, on: c, pop: B, push: ε}
 # ]
 # grammar rule for defining transitions for a FA
-def p_statement_transitions(p):
-    '''statement : TRANSITIONS COLON LBRACE transitions_list RBRACE'''
-    p[0] = ('transitions', p[3])
-
-
-def p_transitions_list(p):
-    '''transitions_list : transition
-                        | transitions_list COMMA transition'''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = p[1] + [p[3]]
-
-
-def p_transition(p):
-    '''transition : LSQUARE FROM COLON ID COMMA TO COLON ID COMMA ONN COLON ID RSQUARE
-                   | LSQUARE FROM COLON ID COMMA TO COLON ID COMMA ONN COLON ID COMMA POP COLON ID COMMA PUSH COLON ID COMMA STACK COLON ID RSQUARE'''
-    if len(p) == 11:
-        p[0] = (p[4], p[7], p[10])
-    else:
-        p[0] = (p[4], p[7], p[10], p[13], p[16])
 
 
 # grammar rule for defining a FA
@@ -113,18 +155,6 @@ def p_transition(p):
 #         {from :q1 ,to :q2 ,on: a}
 #     ]
 # }
-def p_statement_fa(p):
-    '''statement : FA ID LPAREN RPAREN LBRACE statement_list_fa RBRACE'''
-    p[0] = ('fa', p[2], p[6])
-
-
-def p_statement_list_fa(p):
-    '''statement_list_fa : statement
-                      | statement_list_fa statement'''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = p[1] + [p[2]]
 
 
 # grammar rule for defining a PDA
@@ -143,23 +173,6 @@ def p_statement_list_fa(p):
 #         {from: q1, to: q2, on: c, pop: ε, push: ε,stack:aa}
 #     ]
 # }
-def p_statement_pda(p):
-    '''statement : PDA ID LPAREN RPAREN LBRACE statement_list_pda RBRACE'''
-    p[0] = ('pda', p[2], p[6])
-
-
-def p_statement_list_pda(p):
-    '''statement_list_pda : statement
-                          | statement_list_pda statement'''
-    if len(p) == 2:
-        p[0] = [p[1]]
-    else:
-        p[0] = p[1] + [p[2]]
-
-
-def p_statement_stack_init(p):
-    '''statement : STACK_INIT COLON ID'''
-    p[0] = ('stack_init', p[3])
 
 
 # grammar rule for defining a context free grammar
