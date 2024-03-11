@@ -4,14 +4,14 @@ from ply import lex
 reserved = {
     'alphabet': 'ALPHABET',
     'str': 'STR',
-    'lang': 'LANG',
+    # 'lang': 'LANG',
     're': 'RE',
     'initial': 'INITIAL',
     'final': 'FINAL',
-    'transition': 'TRANSITION',
+    # 'transition': 'TRANSITION',
     'states': 'STATES',
-    'dfa': 'DFA',
-    'nfa': 'NFA',
+    # 'dfa': 'DFA',
+    # 'nfa': 'NFA',
     'minimize': 'MINIMIZE',
     'isequivalent': 'ISEQUIVALENT',
     'show': 'SHOW',
@@ -19,8 +19,8 @@ reserved = {
     'else': 'ELSE',
     'visualize': 'VISUALIZE',
     'simulate': 'SIMULATE',
-    'dpda': 'DPDA',
-    'npda': 'NPDA',
+    # 'dpda': 'DPDA',
+    # 'npda': 'NPDA',
     'pda': 'PDA',
     'stack': 'STACK',
     'pop': 'POP',
@@ -35,8 +35,6 @@ reserved = {
     'union': 'UNION',
     'intersect': 'INTERSECT',
     'complement': 'COMPLEMENT',
-    'operation': 'OPERATION',
-    'closure': 'CLOSURE',
     'yes': 'YES',
     'no': 'NO',
     'regular': 'REGULAR',
@@ -45,23 +43,37 @@ reserved = {
     'isnotcfl': 'ISNOTCFL',
     'checkpumpinglemmacfl': 'CHECKPUMPINGLEMMACFL',
     'checkpumpinglemmareg': 'CHECKPUMPINGLEMMAREG',
-    'define': 'DEFINE',
-    'nextstate': 'NEXTSTATE',
-    'symbol': 'SYMBOL',
+    # 'define': 'DEFINE',
+    # 'nextstate': 'NEXTSTATE',
+    # 'symbol': 'SYMBOL',
     'fa': 'FA',
     'from': 'FROM',
     'on': 'ONN',
     'to': 'TO',
-    'export': 'EXPORT',
+    # 'export': 'EXPORT',
     'nonterminals': 'NONTERMINALS',
     'terminals': 'TERMINALS',
     'start': 'START',
     'rules': 'RULES',
     'cfg': 'CFG',
+    'isDfa': 'ISDFA',
+    'isNfa': 'ISNFA',
+    'isDpda': 'ISDPDA',
+    'isNpda': 'ISNPDA',
+    'stack_init': 'STACK_INIT',
+    'transitions': 'TRANSITIONS'
 }
-
+special_characters = {
+    'STAR': '*',
+    'PLUS': '+',
+    'OR': '|',
+    'DOT': '.',
+    'CARET': '^',
+    'DOLLAR': '$',
+    'QUESTION': '?',
+}
 # List of token names
-tokens = list(reserved.values()) + [
+tokens = list(reserved.values()) + list(special_characters.keys()) + [
     'NUMBER',
     'ID',
     'LBRACE',
@@ -79,12 +91,16 @@ tokens = list(reserved.values()) + [
     'ARROW',
     'PIPE',
     'SEMICOLON',
-    'EPSILON'
+    'EPSILON',
+    'SINGLEQUOTE',  # Add SINGLEQUOTE here
+    'STRING',  # Add STRING here,
+    'REGEX_LITERAL_CHAR',
 ]
 
 # Define regular expressions for tokens
+t_SINGLEQUOTE = r"'"
+t_STRING = r'".*?"'  # This regex matches a string enclosed in double quotes
 t_NUMBER = r'\d+'
-
 t_LBRACE = r'\{'
 t_RBRACE = r'\}'
 t_COLON = r':'
@@ -97,8 +113,18 @@ t_RPAREN = r'\)'
 t_ARROW = r'->'
 t_PIPE = r'\|'
 t_SEMICOLON = r';'
-t_EPSILON=r'ε'
+t_EPSILON = r'ε'
+t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
+
+# Define a rule for REGEX_LITERAL_CHAR
+def t_REGEX_LITERAL_CHAR(t):
+    r"'[^']'"
+    t.value = t.value[1]  # Remove the single quotes
+    return t
+
+
+# Define a rule for regex literals
 
 # Define a rule for single-line comments
 def t_SLCOMMENT(t):
@@ -116,13 +142,6 @@ def t_MLCOMMENT(t):
 def t_DOCCOMMENT(t):
     r'\"{3}[\s\S]*?\"{3}'
     pass  # Documentation comments are ignored
-
-
-# Define a rule for identifiers (IDs)
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value.lower(), 'ID')  # Check if the ID is a reserved word
-    return t
 
 
 # Define a rule to track line numbers
