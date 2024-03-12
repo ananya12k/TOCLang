@@ -1,4 +1,5 @@
 import ply.yacc as yacc
+from ast_parser import *
 
 # Get the token list from the lexer
 from lexertoc import tokens
@@ -7,7 +8,7 @@ from lexertoc import tokens
 # Parsing rules
 def p_statement_alphabet(p):
     '''statement : ALPHABET ID EQUALS LBRACE alphabet_list RBRACE'''
-    p[0] = ('alphabet', p[2], p[5])
+    p[0] = AlphabetNode(p[2], p[5])
 
 
 def p_alphabet_list(p):
@@ -21,7 +22,7 @@ def p_alphabet_list(p):
 
 def p_statement_str(p):
     '''statement : STR ID EQUALS SINGLEQUOTE STRING SINGLEQUOTE'''
-    p[0] = ('str', p[2], p[4])
+    p[0] = STRNode(p[2], p[5])
 
 
 def p_statement(p):
@@ -33,15 +34,18 @@ def p_statement(p):
 
 def p_fa_statement(p):
     '''fa_statement : FA ID LPAREN RPAREN LBRACE fa_body RBRACE'''
-    p[0] = ('fa', p[2], p[6])
+    p[0] = FANode(p[2], StateListNode(p[6]['states']), InitialNode(
+        p[6]['initial']), FinalNode(p[6]['final']), TransitionsNode(p[6]['transitions']))
 
 
 def p_pda_statement(p):
     '''pda_statement : PDA ID LPAREN RPAREN LBRACE pda_body RBRACE'''
-    p[0] = ('pda', p[2], p[6])
+    p[0] = PDANode(p[2], StateListNode(p[6]['states']), InitialNode(
+        p[6]['initial']), FinalNode(p[6]['final']), TransitionsNode(p[6]['transitions']))
 
 
 # FA grammar rules
+
 
 def p_fa_body(p):
     '''fa_body : states
@@ -53,7 +57,7 @@ def p_fa_body(p):
 
 def p_states(p):
     '''states : STATES COLON LBRACE states_list RBRACE'''
-    p[0] = ('states', p[3])
+    p[0] = StateListNode(p[4])
 
 
 def p_states_list(p):
@@ -67,12 +71,12 @@ def p_states_list(p):
 
 def p_initial(p):
     '''initial : INITIAL COLON LBRACE ID RBRACE'''
-    p[0] = ('initial', p[4])
+    p[0] = InitialNode(p[4])
 
 
 def p_final(p):
     '''final : FINAL COLON LBRACE final_list RBRACE'''
-    p[0] = ('final', p[3])
+    p[0] = FinalNode(p[4])
 
 
 def p_final_list(p):
@@ -102,9 +106,9 @@ def p_transition(p):
     '''transition : LSQUARE FROM COLON ID COMMA TO COLON ID COMMA ONN COLON ID RSQUARE
                   | LSQUARE FROM COLON ID COMMA TO COLON ID COMMA ONN COLON ID COMMA POP COLON ID COMMA PUSH COLON ID COMMA STACK COLON ID RSQUARE'''
     if len(p) == 11:
-        p[0] = (p[4], p[7], p[10])
+        p[0] = TransitionNode(p[4], p[7], p[10])
     else:
-        p[0] = (p[4], p[7], p[10], p[13], p[16])
+        p[0] = TransitionNode(p[4], p[7], p[10], p[13], p[16])
 
 
 # PDA grammar rules
@@ -198,7 +202,7 @@ def p_stack_init(p):
 
 def p_cfg_statement(p):
     '''cfg_statement : CFG ID LPAREN RPAREN LBRACE cfg_body RBRACE'''
-    p[0] = ('cfg', p[2], p[6])
+    p[0] = CFGNode(p[2], p[6])
 
 
 def p_cfg_body(p):
@@ -211,14 +215,14 @@ def p_cfg_body(p):
                 | cfg_body start_statement
                 | cfg_body rules_statement'''
     if len(p) == 2:
-        p[0] = [p[1]]
+        p[0] = p[1]
     else:
         p[0] = p[1] + [p[2]]
 
 
 def p_nonterminals_statement(p):
     '''nonterminals_statement : NONTERMINALS COLON LBRACE nonterminals_list RBRACE'''
-    p[0] = ('nonterminals', p[3])
+    p[0] = NonTerminalsNode(p[4])
 
 
 def p_nonterminals_list(p):
@@ -232,7 +236,7 @@ def p_nonterminals_list(p):
 
 def p_terminals_statement(p):
     '''terminals_statement : TERMINALS COLON LBRACE terminals_list RBRACE'''
-    p[0] = ('terminals', p[3])
+    p[0] = TerminalsNode(p[4])
 
 
 def p_terminals_list(p):
@@ -246,12 +250,12 @@ def p_terminals_list(p):
 
 def p_start_statement(p):
     '''start_statement : START COLON ID'''
-    p[0] = ('start', p[3])
+    p[0] = StartNode(p[3])
 
 
 def p_rules_statement(p):
     '''rules_statement : RULES COLON LBRACE rules_list RBRACE'''
-    p[0] = ('rules', p[3])
+    p[0] = RulesNode(p[4])
 
 
 def p_rules_list(p):
@@ -265,7 +269,7 @@ def p_rules_list(p):
 
 def p_rule(p):
     '''rule : ID ARROW rule_rhs SEMICOLON'''
-    p[0] = (p[1], p[3])
+    p[0] = RuleNode(p[1], p[3])
 
 
 def p_rule_rhs(p):
@@ -280,7 +284,7 @@ def p_rule_rhs(p):
 
 def p_statement_re(p):
     '''statement : RE ID EQUALS SINGLEQUOTE REGEX SINGLEQUOTE'''
-    p[0] = ('re', p[2], p[4])
+    p[0] = ('re', p[2], p[5])
 
 
 def p_REGEX(p):
@@ -323,21 +327,18 @@ def p_REGEX_SPECIAL_CHAR(p):
 
 def p_statement_minimize(p):
     '''statement : MINIMIZE LPAREN ID RPAREN'''
-    p[0] = ('minimize', p[3])
-
-
-# grammar rule for simulate(myfa, mystring) statement
+    p[0] = StatementNode('minimize', p[3])
 
 
 def p_statement_simulate(p):
     '''statement : SIMULATE LPAREN ID COMMA ID RPAREN'''
-    p[0] = ('simulate', p[3], p[5])
+    p[0] = StatementNode('simulate', p[3], p[5])
 
 
 # grammar rule for visualize(myfa) statement
 def p_statement_visualize(p):
     '''statement : VISUALIZE LPAREN ID RPAREN'''
-    p[0] = ('visualize', p[3])
+    p[0] = StatementNode('visualize', p[3])
 
 
 # grammar rule for concat(myfa1, myfa2) statement
@@ -535,15 +536,37 @@ parser = yacc.yacc()
 #
 # # Test the parser
 data = '''
-alphabet my_alphabet = {a, b, c}
-str my_string = ababac
-initial: {q1}
-final: {q2, q3}
-re my_regex = 'a|(b|x)*'
+// Define the alphabet
+alphabet x = {a, b, c}
+
+// Define the string
+str b = 'ababac'
+
+// Define a finite automaton (FA) named myfa
+fa y() {
+    // Define the states
+    states: {q1, q2},
+
+    // Define the initial state
+    initial: {q1},
+
+    // Define the final state
+    final: {q2},
+
+    // Define the transitions
+    transitions: [
+        {from:q1 ,to :q2, on: a}
+    ]
+}
+
+// Simulate the FA
+simulate(myfa)
+
+// Visualize the FA
+visualize(myfa)
+
 pda mypda {
     states: {q0, q1, q2},
-    alphabet: {a, b, c},
-    stack_alphabet: {A, B, C},
     initial: q0,
     final: q2,
     transitions: [
@@ -553,7 +576,7 @@ pda mypda {
     ]
 }
 '''
-
+#
 # Parse the input using the parser object
 result = parser.parse(data)
 

@@ -2,16 +2,11 @@ from ply import lex
 
 # Reserved keywords for a language
 reserved = {
-    'alphabet': 'ALPHABET',
     'str': 'STR',
-    # 'lang': 'LANG',
     're': 'RE',
     'initial': 'INITIAL',
     'final': 'FINAL',
-    # 'transition': 'TRANSITION',
     'states': 'STATES',
-    # 'dfa': 'DFA',
-    # 'nfa': 'NFA',
     'minimize': 'MINIMIZE',
     'isequivalent': 'ISEQUIVALENT',
     'show': 'SHOW',
@@ -19,10 +14,7 @@ reserved = {
     'else': 'ELSE',
     'visualize': 'VISUALIZE',
     'simulate': 'SIMULATE',
-    # 'dpda': 'DPDA',
-    # 'npda': 'NPDA',
     'pda': 'PDA',
-    'stack': 'STACK',
     'pop': 'POP',
     'push': 'PUSH',
     'accept': 'ACCEPT',
@@ -43,14 +35,10 @@ reserved = {
     'isnotcfl': 'ISNOTCFL',
     'checkpumpinglemmacfl': 'CHECKPUMPINGLEMMACFL',
     'checkpumpinglemmareg': 'CHECKPUMPINGLEMMAREG',
-    # 'define': 'DEFINE',
-    # 'nextstate': 'NEXTSTATE',
-    # 'symbol': 'SYMBOL',
     'fa': 'FA',
     'from': 'FROM',
     'on': 'ONN',
     'to': 'TO',
-    # 'export': 'EXPORT',
     'nonterminals': 'NONTERMINALS',
     'terminals': 'TERMINALS',
     'start': 'START',
@@ -96,6 +84,8 @@ tokens = list(reserved.values()) + list(special_characters.values()) + [
     'SINGLEQUOTE',  # Add SINGLEQUOTE here
     'STRING',  # Add STRING here,
     'REGEX_LITERAL_CHAR',
+    'ALPHABET',
+    'STACK'
 ]
 
 # Define regular expressions for tokens
@@ -117,8 +107,16 @@ t_PIPE = r'\|'
 t_SEMICOLON = r';'
 t_EPSILON = r'ε'
 t_STAR = r'\*'  # Added rule for the asterisk character
-t_ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
+
+def t_ALPHABET(t):
+    r'alphabet'
+    return t
+
+
+def t_STACK(t):
+    r'stack'
+    return t
 
 
 # Define a rule for REGEX_LITERAL_CHAR
@@ -146,6 +144,12 @@ def t_MLCOMMENT(t):
 def t_DOCCOMMENT(t):
     r'\"{3}[\s\S]*?\"{3}'
     pass  # Documentation comments are ignored
+
+
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = reserved.get(t.value.lower(), 'ID')  # Check if the ID is a reserved word
+    return t
 
 
 # Define a rule to track line numbers
@@ -200,16 +204,13 @@ lexer = lex.lex()
 data = '''
 
 // Define the alphabet
-alphabet = {a, b, c}
+alphabet x = {a, b, c}
 
 // Define the string
-string = "ababac"
+str b = "ababac"
 
 // Define a finite automaton (FA) named myfa
-fa 
-
-
-() {
+fa y() {
     // Define the states
     states: {q1, q2},
 
@@ -221,7 +222,7 @@ fa
 
     // Define the transitions
     transitions: [
-        {from q1 to q2 on a}
+        {from:q1 ,to :q2, on: a}
     ]
 }
 
@@ -233,8 +234,6 @@ visualize(myfa)
 
 pda mypda {
     states: {q0, q1, q2},
-    alphabet: {a, b, c},
-    stack_alphabet: {A, B, C},
     initial: q0,
     final: q2,
     transitions: [
@@ -243,8 +242,6 @@ pda mypda {
         {from: q1, to: q2, on: c, pop: B, push: ε}
     ]
 }
-
-
 
 '''
 lexer.input(data)
