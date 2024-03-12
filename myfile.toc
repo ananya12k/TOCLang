@@ -1,0 +1,39 @@
+// Define the alphabet
+alphabet x = {a, b, c}
+
+// Define the string
+str b = 'ababac'
+
+// Define a finite automaton (FA) named myfa
+fa y() {
+    // Define the states
+    states: {q1, q2},
+
+    // Define the initial state
+    initial: {q1},
+
+    // Define the final state
+    final: {q2},
+
+    // Define the transitions
+    transitions: [
+        {from:q1 ,to :q2, on: a}
+    ]
+}
+
+// Simulate the FA
+simulate(myfa)
+
+// Visualize the FA
+visualize(myfa)
+
+pda mypda {
+    states: {q0, q1, q2},
+    initial: q0,
+    final: q2,
+    transitions: [
+        {from: q0, to: q1, on: a, pop: A, push: AB},
+        {from: q1, to: q1, on: b, pop: A, push: BC},
+        {from: q1, to: q2, on: c, pop: B, push: ε}
+    ]
+}
